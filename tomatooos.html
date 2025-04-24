@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Throw Tomatoes at Akechi</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      cursor: pointer;
+      overflow: hidden;
+      background-image: url("https://static.wikia.nocookie.net/megamitensei/images/c/c7/P5R_Portrait_Akechi.png/revision/latest?cb=20200414201654");
+      background-size: 750px;
+	  background-repeat: no-repeat;
+      background-position: center;
+      transition: background-image 0.3s ease;
+    }
+
+    .tomato {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background-image: url('https://openclipart.org/image/2000px/336192');
+      background-size: cover;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      animation: pop 0.3s ease-out;
+    }
+
+    @keyframes pop {
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hidden audio element -->
+  <audio id="splatSound" src="https://od.lk/s/OTBfNDQ0NzU0ODRf/Tomato%20Splat%20Sound%20Effect.mp3" preload="auto"></audio>
+
+  <script>
+    const sound = document.getElementById('splatSound');
+    const originalBackground = "url('https://static.wikia.nocookie.net/megamitensei/images/0/03/P5R_Portrait_Akechi_Disgusted.png/revision/latest?cb=20200414203722')"; // original background color
+    const splatBackground = "url('https://static.wikia.nocookie.net/megamitensei/images/5/57/P5R_Portrait_Akechi_Harmed.png/revision/latest?cb=20200414202920')";
+    let activeTomatoes = 0;
+
+    document.body.addEventListener('click', function(event) {
+      // Skip if clicking on an interactive UI (if you add more later)
+      if (event.target.classList.contains('bg-thumb')) return;
+
+      // Create tomato
+      const tomato = document.createElement('div');
+      tomato.classList.add('tomato');
+      tomato.style.left = `${event.clientX}px`;
+      tomato.style.top = `${event.clientY}px`;
+      document.body.appendChild(tomato);
+
+      // Increase count
+      activeTomatoes++;
+      // Change background
+      document.body.style.backgroundImage = splatBackground;
+
+      // Play sound
+      sound.currentTime = 0;
+      sound.play();
+
+      // Remove after 2s and reset background if none left
+      setTimeout(() => {
+        tomato.remove();
+        activeTomatoes--;
+        if (activeTomatoes === 0) {
+          document.body.style.backgroundImage = originalBackground;
+        }
+      }, 3500);
+    });
+  </script>
+</body>
+</html>
